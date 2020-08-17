@@ -1,0 +1,26 @@
+
+# Project
+generate_pkg.sh
+/dist
+/build
+*.egg-info/
+*.egg
+__pycache__
+
+# project_env
+Pipfile
+Pipfile.lock
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+coverage.xml
+*.cover
+
+# vscode
+.history
+
