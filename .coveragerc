@@ -1,5 +1,6 @@
 [run]
 source = .
+omit = setup.py
 
 [report]
 show_missing = true
