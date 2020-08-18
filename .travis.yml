@@ -7,6 +7,6 @@ install:
   - pip install coverage requests
   - pip install -i https://test.pypi.org/simple/ pyrecard
 script:
-  - coverage run tests.py
+  - coverage run test_suite.py
 after_success:
   - bash <(curl -s https://codecov.io/bash)

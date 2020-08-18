@@ -1,5 +1,5 @@
 import unittest
-from pyrecard import tests as signature_tests
+from tests import signature_tests
 
 
 MODULES = (signature_tests,)
