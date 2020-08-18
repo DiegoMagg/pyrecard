@@ -4,7 +4,7 @@ import requests
 from random import choices
 from pyrecard.signature import plans
 from exceptions import MissingKey
-from common.auth import get_auth_header
+from common.urls import get_url
 
 
 class PlanTestCase(unittest.TestCase):
@@ -23,8 +23,10 @@ class PlanTestCase(unittest.TestCase):
             'payment_method': 'CREDIT_CARD'
         }
 
-    def test_wirecard_plan_must_be_acessible(self):
-        self.assertEqual(200, requests.get(plans.URL, headers=get_auth_header()).status_code)
+    def test_wirecard_sandbox_must_be_accessible(self):
+        response = requests.get(get_url())
+        self.assertEqual(401, response.status_code)
+        self.assertEqual('Token or Key are invalids', response.json()['ERROR'])
 
     def test_raise_error_if_key_is_missing(self):
         environ['WIRECARD_KEY'] = ''
@@ -50,3 +52,20 @@ class PlanTestCase(unittest.TestCase):
         fetch_data = plans.fetch(code)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(fetch_data.json().get('amount'), old_amount)
+
+    def test_all_plans_must_be_returned(self):
+        response = plans.fetch_all()
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('plans' in response.json())
+        self.assertGreater(len(response.json()['plans']), 1)
+
+    def test_plan_must_be_inactivated_and_reactivated(self):
+        plans.create(self.data)
+        response = plans.fetch(self.data['code'])
+        self.assertEqual(response.json()['status'], 'ACTIVE')
+        plans.inactivate(self.data['code'])
+        response = plans.fetch(self.data['code'])
+        self.assertNotEqual(response.json()['status'], 'ACTIVE')
+        plans.activate(self.data['code'])
+        response = plans.fetch(self.data['code'])
+        self.assertEqual(response.json()['status'], 'ACTIVE')
