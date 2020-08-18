@@ -6,6 +6,7 @@ generate_pkg.sh
 *.egg-info/
 *.egg
 __pycache__
+coverage_run.sh
 
 # project_env
 Pipfile
