@@ -1,6 +1,6 @@
 [run]
 source = .
-omit = setup.py
+omit = setup.py, *__init__.py
 
 [report]
 show_missing = true

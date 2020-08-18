@@ -11,6 +11,14 @@ def alter(code, json):
     return requests.put(get_url(f'/plans/{code}'), headers=get_auth_header(), json=json)
 
 
+def activate(code):
+    return requests.put(get_url(f'/plans/{code}/activate'), headers=get_auth_header())
+
+
+def inactivate(code):
+    return requests.put(get_url(f'/plans/{code}/inactivate'), headers=get_auth_header())
+
+
 def fetch(code):
     return requests.get(get_url(f'/plans/{code}'), headers=get_auth_header())
 

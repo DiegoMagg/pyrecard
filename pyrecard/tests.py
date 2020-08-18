@@ -58,3 +58,14 @@ class PlanTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('plans' in response.json())
         self.assertGreater(len(response.json()['plans']), 1)
+
+    def test_plan_must_be_inactivated_and_reactivated(self):
+        plans.create(self.data)
+        response = plans.fetch(self.data['code'])
+        self.assertEqual(response.json()['status'], 'ACTIVE')
+        plans.inactivate(self.data['code'])
+        response = plans.fetch(self.data['code'])
+        self.assertNotEqual(response.json()['status'], 'ACTIVE')
+        plans.activate(self.data['code'])
+        response = plans.fetch(self.data['code'])
+        self.assertEqual(response.json()['status'], 'ACTIVE')
