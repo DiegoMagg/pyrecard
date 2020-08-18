@@ -4,7 +4,7 @@ import requests
 from random import choices
 from pyrecard.signature import plans
 from exceptions import MissingKey
-from common.auth import get_auth_header
+from common.urls import get_url
 
 
 class PlanTestCase(unittest.TestCase):
@@ -23,8 +23,10 @@ class PlanTestCase(unittest.TestCase):
             'payment_method': 'CREDIT_CARD'
         }
 
-    def test_wirecard_plan_must_be_acessible(self):
-        self.assertEqual(200, requests.get(plans.URL, headers=get_auth_header()).status_code)
+    def test_wirecard_sandbox_must_be_accessible(self):
+        response = requests.get(get_url())
+        self.assertEqual(401, response.status_code)
+        self.assertEqual('Token or Key are invalids', response.json()['ERROR'])
 
     def test_raise_error_if_key_is_missing(self):
         environ['WIRECARD_KEY'] = ''
