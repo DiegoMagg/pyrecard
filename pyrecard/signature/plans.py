@@ -8,9 +8,13 @@ def create(json):
     return requests.post(URL, headers=get_auth_header(), json=json)
 
 
+def alter(code, json):
+    return requests.put(URL + f'/{code}', headers=get_auth_header(), json=json)
+
+
 def fetch(code):
     return requests.get(URL + f'/{code}', headers=get_auth_header())
 
 
-def alter(code, json):
-    return requests.put(URL + f'/{code}', headers=get_auth_header(), json=json)
+def fetch_all():
+    return requests.get(URL, headers=get_auth_header())

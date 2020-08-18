@@ -50,3 +50,9 @@ class PlanTestCase(unittest.TestCase):
         fetch_data = plans.fetch(code)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(fetch_data.json().get('amount'), old_amount)
+
+    def test_all_plans_must_be_returned(self):
+        response = plans.fetch_all()
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('plans' in response.json())
+        self.assertGreater(len(response.json()['plans']), 1)
