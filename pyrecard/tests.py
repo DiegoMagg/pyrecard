@@ -1,8 +1,10 @@
 import unittest
 from os import environ
+import requests
 from random import choices
-from .signature import Plan
+from pyrecard.signature import plans
 from exceptions import MissingKey
+from common.auth import get_auth_header
 
 
 class PlanTestCase(unittest.TestCase):
@@ -21,21 +23,30 @@ class PlanTestCase(unittest.TestCase):
             'payment_method': 'CREDIT_CARD'
         }
 
+    def test_wirecard_plan_must_be_acessible(self):
+        self.assertEqual(200, requests.get(plans.URL, headers=get_auth_header()).status_code)
+
     def test_raise_error_if_key_is_missing(self):
         environ['WIRECARD_KEY'] = ''
         with self.assertRaises(MissingKey):
-            new_plan = Plan(self.data)
-            new_plan.create()
+            plans.create(self.data)
 
     def test_plan_with_valid_data_should_be_created(self):
-        new_plan = Plan(self.data)
-        response = new_plan.create()
-        self.assertEqual(response.get('status_code'), 201)
-        self.assertEqual(response.get('message'), 'Plano criado com sucesso')
+        response = plans.create(self.data)
+        self.assertEqual(response.status_code, 201)
 
     def test_plan_with_invalid_data_should_not_be_created(self):
         self.data['code'] = ''
-        new_plan = Plan(self.data)
-        response = new_plan.create()
-        self.assertEqual(response.get('status_code'), 400)
-        self.assertEqual(response.get('message'), 'Erro na requisição')
+        response = plans.create(self.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue('errors' in response.json())
+
+    def test_plan_should_be_changed(self):
+        response = plans.create(self.data)
+        old_amount = self.data['amount']
+        self.data['amount'] = 1000
+        code = self.data.pop('code')
+        response = plans.alter(code, self.data)
+        fetch_data = plans.fetch(code)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(fetch_data.json().get('amount'), old_amount)
