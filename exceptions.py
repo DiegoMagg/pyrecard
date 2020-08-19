@@ -11,3 +11,9 @@ class MissingKey(PyrecardException):
     '''Raised when wirecard key is missing'''
 
     pass
+
+
+class InvalidKey(PyrecardException):
+    '''Raised when wirecard key is invalid'''
+
+    pass

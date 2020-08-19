@@ -5,7 +5,11 @@
 
 Pyrecard is a python utility for payments using the Wirecard platform.
 
-## Used by
+## Usage
+
+pip install pyrecard
+
+## Used by:
 <img src="https://mexase.esp.br/static/images/logo/logo.png"
      alt="Markdown Monster icon" width=160
      style="float: left; margin-right: 10px;" />
