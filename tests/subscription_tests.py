@@ -1,6 +1,6 @@
 import unittest
 import requests
-from pyrecard.subscription import plan, customer, subscription
+from pyrecard.subscription import plan, customer, subscription, payment
 from pyrecard.common.urls import get_url
 from tests.mocker import mock_plan, mock_customer, mock_subscription
 
@@ -91,6 +91,10 @@ class SubscriptionTestCase(unittest.TestCase):
     def setUp(self):
         self.data = mock_subscription()
 
+    def test_raise_error_if_payment_method_is_invalid(self):
+        with self.assertRaises(ValueError):
+            subscription.set_payment_method('CODE', 'INVALID_METHOD')
+
     def test_signature_must_be_created(self):
         response = subscription.create(self.data)
         self.assertEqual(response.status_code, 201)
@@ -137,3 +141,33 @@ class SubscriptionTestCase(unittest.TestCase):
         subscription.create(self.data)
         response = subscription.set_payment_method(self.data['code'], 'BOLETO')
         self.assertEqual(response.status_code, 200)
+
+    def test_all_invoices_must_be_returned(self):
+        response = subscription.get_all_invoices(self.data['code'])
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('invoices' in response.json())
+
+
+class InvoicesTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.data = mock_subscription()
+
+    def test_invoice_must_be_returned(self):
+        sub = subscription.create(self.data)
+        response = payment.fetch_invoice(sub.json()['invoice']['id'])
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.json(), dict)
+
+    def test_all_invoice_payments_must_be_returned(self):
+        sub = subscription.create(self.data)
+        response = payment.fetch_invoice_payments(sub.json()['invoice']['id'])
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('payments' in response.json())
+
+    def test_payment_details_must_be_returned(self):
+        sub = subscription.create(self.data)
+        invoices = payment.fetch_invoice_payments(sub.json()['invoice']['id'])
+        response = payment.payment_details(invoices.json()['payments'][0]['id'])
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.json(), dict)

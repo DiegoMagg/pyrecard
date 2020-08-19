@@ -26,8 +26,14 @@ def change(code, json):
 
 
 def set_payment_method(code, method):
+    if method.upper() not in ['CREDIT_CARD', 'BOLETO']:
+        raise ValueError('The payment method must be "CREDIT_CARD" or "BOLETO"')
     return requests.put(
         get_url(f'/subscriptions/{code}/change_payment_method'),
         headers=get_header(),
         json={"payment_method": method.upper()},
     )
+
+
+def get_all_invoices(subscription_code):
+    return requests.get(get_url(f'/subscriptions/{subscription_code}/invoices'), headers=get_header())
