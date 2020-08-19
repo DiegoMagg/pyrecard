@@ -11,6 +11,7 @@ coverage_run.sh
 # project_env
 Pipfile
 Pipfile.lock
+.env
 
 # Unit test / coverage reports
 htmlcov/

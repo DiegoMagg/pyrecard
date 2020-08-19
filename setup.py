@@ -11,7 +11,7 @@ setuptools.setup(
     description="A Python package for wirecard payment gateway",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pypa/pyrecard",
+    url="https://github.com/DiegoMagg/pyrecard",
     packages=setuptools.find_packages(),
     install_requires=['requests'],
     classifiers=[

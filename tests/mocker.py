@@ -1,6 +1,6 @@
 from random import choices
 from datetime import datetime
-from pyrecard.signature import plan, customer
+from pyrecard.subscription import plan, customer
 
 
 def mock_plan():

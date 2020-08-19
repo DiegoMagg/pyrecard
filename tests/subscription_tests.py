@@ -1,8 +1,6 @@
 import unittest
-from os import environ
 import requests
-from pyrecard.signature import plan, customer, subscription
-from exceptions import MissingKey
+from pyrecard.subscription import plan, customer, subscription
 from pyrecard.common.urls import get_url
 from tests.mocker import mock_plan, mock_customer, mock_subscription
 
@@ -16,11 +14,6 @@ class PlanTestCase(unittest.TestCase):
         response = requests.get(get_url())
         self.assertEqual(401, response.status_code)
         self.assertEqual('Token or Key are invalids', response.json()['ERROR'])
-
-    def test_raise_error_if_key_is_missing(self):
-        environ['SANDBOX_KEY'] = ''
-        with self.assertRaises(MissingKey):
-            plan.create(self.data)
 
     def test_plan_with_valid_data_should_be_created(self):
         response = plan.create(self.data)
@@ -58,9 +51,6 @@ class PlanTestCase(unittest.TestCase):
         plan.activate(self.data['code'])
         response = plan.fetch(self.data['code'])
         self.assertEqual(response.json()['status'], 'ACTIVE')
-
-    def tearDown(self):
-        environ['SANDBOX_KEY'] = '01010101010101010101010101010101:ABABABABABABABABABABABABABABABABABABABAB'
 
 
 class CustomersTestCase(unittest.TestCase):

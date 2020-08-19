@@ -1,6 +1,6 @@
 import unittest
 from os import environ
-from exceptions import MissingKey, InvalidKey
+from pyrecard.exceptions import MissingKey, InvalidKey
 from pyrecard.common.auth import get_b64, get_header
 
 
