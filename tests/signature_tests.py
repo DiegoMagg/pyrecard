@@ -6,15 +6,10 @@ from exceptions import MissingKey
 from common.urls import get_url
 from tests.mocker import mock_plan, mock_customer, mock_subscription
 
-
 environ['WIRECARD_KEY'] = '01010101010101010101010101010101:ABABABABABABABABABABABABABABABABABABABAB'
 
 
 class PlanTestCase(unittest.TestCase):
-    '''
-       The following data has been taken and adapted from
-       https://dev.wirecard.com.br/v1.5/reference#criar-plano
-    '''
 
     def setUp(self):
         self.data = mock_plan()
@@ -71,10 +66,6 @@ class PlanTestCase(unittest.TestCase):
 
 
 class CustomersTestCase(unittest.TestCase):
-    '''
-       The following data has been taken and adapted from
-       https://dev.wirecard.com.br/v1.5/reference#criar-assinante
-    '''
 
     def setUp(self):
         self.data = mock_customer()
@@ -108,10 +99,6 @@ class CustomersTestCase(unittest.TestCase):
 
 
 class SubscriptionTestCase(unittest.TestCase):
-    '''
-       The following data has been taken and adapted from
-       https://dev.wirecard.com.br/v1.5/reference#assinaturas
-    '''
 
     def setUp(self):
         self.data = mock_subscription()

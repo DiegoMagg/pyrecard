@@ -4,6 +4,10 @@ from pyrecard.signature import plan, customer
 
 
 def mock_plan():
+    '''
+       The following data has been taken and adapted from
+       https://dev.wirecard.com.br/v1.5/reference#criar-plano
+    '''
     return {
         'code': ''.join(choices('ABCDEF1234567890', k=10)),
         'name': 'Plano Especial',
@@ -18,6 +22,10 @@ def mock_plan():
 
 
 def mock_customer():
+    '''
+       The following data has been taken and adapted from
+       https://dev.wirecard.com.br/v1.5/reference#criar-assinante
+    '''
     return {
         'code': ''.join(choices('ABCDEF1234567890', k=10)),
         'email': 'test@user.com',
@@ -50,6 +58,10 @@ def mock_customer():
 
 
 def mock_subscription():
+    '''
+       The following data has been taken and adapted from
+       https://dev.wirecard.com.br/v1.5/reference#assinaturas
+    '''
     mocked_plan = mock_plan()
     mocked_customer = mock_customer()
     plan.create(mocked_plan)
