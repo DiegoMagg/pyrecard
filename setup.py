@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyrecard",
-    version="0.0.1",
+    version="0.0.6",
     author="Diego Magalhães",
     author_email="dmlmagal@gmail.com",
     description="A Python package for wirecard payment gateway",

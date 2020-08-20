@@ -65,7 +65,7 @@ def mock_subscription():
     mocked_plan = mock_plan()
     mocked_customer = mock_customer()
     plan.create(mocked_plan)
-    customer.create(mocked_customer)
+    customer.create(mocked_customer, new_vault=True)
     return {
         'code': ''.join(choices('ABCDEF1234567890', k=10)),
         'amount': 9990,

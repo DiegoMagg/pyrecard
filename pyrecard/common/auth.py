@@ -2,6 +2,7 @@ from os import environ
 from re import match
 from base64 import b64encode
 from pyrecard.exceptions import MissingKey, InvalidKey
+from pyrecard.sdk import VERSION
 
 
 def get_b64(key=None):
@@ -13,7 +14,7 @@ def get_b64(key=None):
 
 
 def get_header():
-    headers = {'User-Agent': 'Pyrecard', 'Content-Type': 'application/json'}
-    if environ.get('PYRECARD_ENV') == 'production':
+    headers = {'User-Agent': f'Pyrecard - {VERSION}', 'Content-Type': 'application/json'}
+    if environ.get('PYRECARD_ENV', '').lower() == 'production':
         return {**headers, **get_b64(environ.get('PRODUCTION_KEY'))}
     return {**headers, **get_b64(environ.get('SANDBOX_KEY'))}

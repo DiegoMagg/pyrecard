@@ -3,7 +3,7 @@ from pyrecard.common.auth import get_header
 from pyrecard.common.urls import get_url
 
 
-def create(json, new_vault=True):
+def create(json, new_vault=False):
     return requests.post(get_url(f'/customers?new_vault={new_vault}'), headers=get_header(), json=json)
 
 

@@ -1,15 +1,108 @@
 # Pyrecard
 
+
+
 [![Build Status](https://travis-ci.com/DiegoMagg/pyrecard.svg?token=tABSMskBskhEHyyfYxzM&branch=master)](https://github.com/DiegoMagg/pyrecard)
+
 [![codecov](https://codecov.io/gh/DiegoMagg/pyrecard/branch/master/graph/badge.svg?token=RT3ZXODSAH)](https://codecov.io/gh/DiegoMagg/pyrecard)
 
-Pyrecard is a python utility for payments using the Wirecard platform.
+
+
+A Python lib for payments using Wirecard platform. **[WIP]**
+
+Wirecard works with a base64 hash made up of its TOKEN: KEY in its operations. Pyrecard uses two environment variables with these sets SANDBOX_KEY and PRODUCTION_KEY and generates the necessary hash for an operation. This lib works in SANDBOX by default, to use PRODUCTION mode add `PYRECARD_ENV='production'`
+
+Currently working with **subscriptions** operations above.
+
+ - [x] Plans
+ - [x] Customers
+ - [x] Subscriptions
+ - [x] Invoices
+ - [x] Payments
+ - [ ] Coupon **[WIP]**
+ - [ ] Payment retry
+
+
+  **Table of Contents**
+
+ 1. Installation
+ 2. Usage
+ 3. Used by
+
+
+
+## 1. Installation
+
+  Minimal setup:
+
+    $ pip install pyrecard
+    $ export SANDBOX_KEY=TOKEN:KEY
+    $ export PRODUCTION_KEY=TOKEN:KEY
+
+  Recomended setup with [pipenv](https://pipenv.pypa.io/en/latest/):
+
+
+    $ pipenv install pyrecard
+
+Create a .env with required data:
+
+
+
+    SANDBOX_KEY=TOKEN:KEY
+    PRODUCTION_KEY=TOKEN:KEY
+
 
 ## Usage
+### subscriptions.plan
+The **plan** module performs the following operations:
 
-pip install pyrecard
+    plan.create(json)
+    plan.alter(plan_code, json)
+    plan.activate(plan_code)
+    plan.inactivate(plan_code)
+    plan.fetch(plan_code)
+    plan.fetch_all()
+
+ All operations above returns a response.
+
+     >>> from pyrecard.subscription import plan
+     >>> response = plan.fetch("plan101")
+     >>> response.status_code
+     200
+     >>> response.json()
+     {'setup_fee': 500, 'amount': 990, 'code': 'plan101', 'name': 'Plano Especial', 'billing_cycles': 12, 'description': 'Descrição do Plano Especial', 'interval': {'unit': 'MONTH', 'length': 1}, 'creation_date': {'month': 1, 'hour': 0, 'year': 2016, 'day': 8, 'minute': 0, 'second': 0}, 'payment_method': 'CREDIT_CARD', 'max_qty': 1, 'trial': {'hold_setup_fee': True, 'days': 30, 'enabled': True}, 'status': 'ACTIVE'}
+     >>>
+
+More information and json stucture check the [plan documentation](https://dev.wirecard.com.br/v1.5/reference#plano)
+
+### subscriptions.customer
+
+The **customer** module performs the following operations:
+
+    customer.create(json, new_vault=False)
+    customer.alter(code, json)
+    customer.fetch(code)
+    customer.fetch_all()
+    customer.change_card(code, json)
+
+Set new_vault to True, if you want to create a user with billing data.
+
+    >>> from pyrecard.subscription import customer
+    >>> customer_data = customer.fetch('cliente01').json()
+    >>> customer_data['address']['state'] = 'MG'
+    >>> response = customer.alter('cliente01', customer_data)
+    >>> response
+    <Response [200]>
+    >>>
+
 
 ## Used by:
+
 <img src="https://mexase.esp.br/static/images/logo/logo.png"
-     alt="Markdown Monster icon" width=160
-     style="float: left; margin-right: 10px;" />
+
+alt="Markdown Monster icon" width=160
+
+style="float: left; margin-right: 10px;"  />
+
+
+
