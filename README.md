@@ -1,16 +1,13 @@
 # Pyrecard
 
 
-
 [![Build Status](https://travis-ci.com/DiegoMagg/pyrecard.svg?token=tABSMskBskhEHyyfYxzM&branch=master)](https://github.com/DiegoMagg/pyrecard)
-
 [![codecov](https://codecov.io/gh/DiegoMagg/pyrecard/branch/master/graph/badge.svg?token=RT3ZXODSAH)](https://codecov.io/gh/DiegoMagg/pyrecard)
 
 
+A Python lib for brazilian [Wirecard](https://wirecard.com.br/) platform.
 
-A Python lib for payments using Wirecard platform. **[WIP]**
-
-Wirecard works with a base64 hash made up of its TOKEN: KEY in its operations. Pyrecard uses two environment variables with these sets SANDBOX_KEY and PRODUCTION_KEY and generates the necessary hash for an operation. This lib works in SANDBOX by default, to use PRODUCTION mode add `PYRECARD_ENV='production'`
+Wirecard works with a base64 hash made up of its `TOKEN:KEY` in its operations. Pyrecard uses two environment variables with these sets `SANDBOX_KEY` and `PRODUCTION_KEY` and generates the necessary hash for an operation. This lib works in SANDBOX by default, to use PRODUCTION mode set environment variable `PYRECARD_ENV=production`
 
 Currently working with **subscriptions** operations above.
 
@@ -30,8 +27,7 @@ Currently working with **subscriptions** operations above.
  3. Used by
 
 
-
-## 1. Installation
+## Installation
 
   Minimal setup:
 
@@ -41,16 +37,12 @@ Currently working with **subscriptions** operations above.
 
   Recomended setup with [pipenv](https://pipenv.pypa.io/en/latest/):
 
-
     $ pipenv install pyrecard
 
-Create a .env with required data:
-
-
+Create a `.env` file with required data:
 
     SANDBOX_KEY=TOKEN:KEY
     PRODUCTION_KEY=TOKEN:KEY
-
 
 ## Usage
 ### subscriptions.plan
@@ -63,17 +55,17 @@ The **plan** module performs the following operations:
     plan.fetch(plan_code)
     plan.fetch_all()
 
- All operations above returns a response.
+All operations above returns a response.
 
-     >>> from pyrecard.subscription import plan
-     >>> response = plan.fetch("plan101")
-     >>> response.status_code
-     200
-     >>> response.json()
-     {'setup_fee': 500, 'amount': 990, 'code': 'plan101', 'name': 'Plano Especial', 'billing_cycles': 12, 'description': 'Descrição do Plano Especial', 'interval': {'unit': 'MONTH', 'length': 1}, 'creation_date': {'month': 1, 'hour': 0, 'year': 2016, 'day': 8, 'minute': 0, 'second': 0}, 'payment_method': 'CREDIT_CARD', 'max_qty': 1, 'trial': {'hold_setup_fee': True, 'days': 30, 'enabled': True}, 'status': 'ACTIVE'}
-     >>>
+    >>> from pyrecard.subscription import plan
+    >>> response = plan.fetch("plan101")
+    >>> response
+    <Response [200]>
+    >>> response.json()
+    {'setup_fee': 500, 'amount': 990, 'code': 'plan101', 'name': 'Plano Especial', 'billing_cycles': 12, 'description': 'Descrição do Plano Especial', 'interval': {'unit': 'MONTH', 'length': 1}, 'creation_date': {'month': 1, 'hour': 0, 'year': 2016, 'day': 8, 'minute': 0, 'second': 0}, 'payment_method': 'CREDIT_CARD', 'max_qty': 1, 'trial': {'hold_setup_fee': True, 'days': 30, 'enabled': True}, 'status': 'ACTIVE'}
+    >>>
 
-More information and json stucture check the [plan documentation](https://dev.wirecard.com.br/v1.5/reference#plano)
+More information and json structure check the [plan documentation](https://dev.wirecard.com.br/v1.5/reference#plano)
 
 ### subscriptions.customer
 
@@ -85,7 +77,7 @@ The **customer** module performs the following operations:
     customer.fetch_all()
     customer.change_card(code, json)
 
-Set new_vault to True, if you want to create a user with billing data.
+Set `new_vault` True to create a user with billing data.
 
     >>> from pyrecard.subscription import customer
     >>> customer_data = customer.fetch('cliente01').json()
@@ -93,15 +85,63 @@ Set new_vault to True, if you want to create a user with billing data.
     >>> response = customer.alter('cliente01', customer_data)
     >>> response
     <Response [200]>
-    >>>
 
+
+More information and json structure check the [customer documentation](https://dev.wirecard.com.br/v1.5/reference#assinantes)
+
+### subscription.subscription
+
+The **subscription** module performs the following operations:
+
+    subscription.create(json, new_customer=False)
+    subscription.alter(code, json)
+    subscription.fetch(code)
+    subscription.fetch_all()
+    subscription.set_status(code, status)
+    subscription.set_payment_method(code, method)
+    subscription.fetch_all_invoices(code)
+
+Set `new_customer` True to create a subscription with a new user.
+
+`set_status` allows `suspend`, `activate` or `cancel`
+
+`set_payment_method` allows `CREDIT_CARD` or `BOLETO`
+
+    >>> from pyrecard.subscription import subscription
+    >>> response = subscription.set_status('assinatura01', 'suspend')
+    >>> response
+    <Response [200]>
+
+More information and json structure check the [subscription documentation](https://dev.wirecard.com.br/v1.5/reference#assinaturas)
+
+
+### subscription.payment
+
+The **payment** module performs the following operations:
+
+    payment.fetch_invoice(code)
+    payment.fetch_invoice_payments(code)
+    payment.payment_details(code)
+    payment.fetch_all_invoices(code)
+
+`set_status` allows `suspend`, `activate` or `cancel`
+
+`set_payment_method` allows `CREDIT_CARD` or `BOLETO`
+
+    >>> from pyrecard.subscription import payment
+    >>> response = payment.fetch_invoice('1025240')
+    >>> response.json()
+    {'subscription_code': 'assinatura01', 'amount': 0, 'id': 1025240, 'creation_date': {'month': 1, 'hour': 14, 'year': 2016, 'day': 8, 'minute': 28, 'second': 52}, 'occurrence': 1, 'plan': {'code': 'plan101', 'name': 'Plano Especial'}, 'items': [{'amount': 0, 'type': 'Período de trial'}], 'customer': {'code': 'cliente03', 'fullname': 'Nome Sobrenome', 'email': 'nome@exemplo.com.br'}, 'status': {'code': 3, 'description': 'Pago'}}
+    >>> response
+    <Response [200]>
+
+
+More information and json structure check the [payments documentation](https://dev.wirecard.com.br/v1.5/reference#listar-todas-as-faturas-de-uma-assinatura)
 
 ## Used by:
 
 <img src="https://mexase.esp.br/static/images/logo/logo.png"
-
 alt="Markdown Monster icon" width=160
-
 style="float: left; margin-right: 10px;"  />
 
 

@@ -1,21 +1,21 @@
 import unittest
 from os import environ
 from pyrecard.exceptions import MissingKey, InvalidKey
-from pyrecard.common.auth import get_b64, get_header
+from pyrecard.utils.factory import b64_factory, header_factory
 
 
-class CommonTestCase(unittest.TestCase):
+class FactoryTestCase(unittest.TestCase):
 
     def test_raise_error_if_not_key(self):
         with self.assertRaises(MissingKey):
-            get_b64(None)
+            b64_factory(None)
 
     def test_raise_error_if_key_is_invalid(self):
         with self.assertRaises(InvalidKey):
-            get_b64('1010:ABAB')
+            b64_factory('1010:ABAB')
 
     def test_generate_b64_object_with_a_valid_key(self):
-        header = get_b64(environ.get('SANDBOX_KEY'))
+        header = b64_factory(environ.get('SANDBOX_KEY'))
         self.assertTrue('Authorization' in header)
         self.assertTrue('Basic' in header['Authorization'])
 
@@ -24,7 +24,7 @@ class CommonTestCase(unittest.TestCase):
            if the environment variable "PYRECARD_ENV" isn't to "production"
            then the key used will be "SANDBOX_KEY" will be used.
         '''
-        headers = get_header()
+        headers = header_factory()
         self.assertTrue('User-Agent' in headers)
         self.assertTrue('Authorization' in headers)
 
@@ -35,7 +35,7 @@ class CommonTestCase(unittest.TestCase):
         '''
         environ['PRODUCTION_KEY'] = environ.get('SANDBOX_KEY')
         environ['PYRECARD_ENV'] = 'production'
-        headers = get_header()
+        headers = header_factory()
         self.assertTrue('User-Agent' in headers)
         self.assertTrue('Authorization' in headers)
 

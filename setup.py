@@ -1,11 +1,12 @@
 import setuptools
+from pyrecard.sdk import VERSION
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="pyrecard",
-    version="0.0.6",
+    version=VERSION,
     author="Diego Magalhães",
     author_email="dmlmagal@gmail.com",
     description="A Python package for wirecard payment gateway",

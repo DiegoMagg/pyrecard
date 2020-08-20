@@ -1,8 +1,9 @@
 import unittest
 import requests
 from pyrecard.subscription import plan, customer, subscription, payment
-from pyrecard.common.urls import get_url
+from pyrecard.utils.factory import url_factory
 from tests.mocker import mock_plan, mock_customer, mock_subscription
+from os import environ
 
 
 class PlanTestCase(unittest.TestCase):
@@ -11,9 +12,15 @@ class PlanTestCase(unittest.TestCase):
         self.data = mock_plan()
 
     def test_wirecard_sandbox_must_be_accessible(self):
-        response = requests.get(get_url())
+        response = requests.get(url_factory())
         self.assertEqual(401, response.status_code)
         self.assertEqual('Token or Key are invalids', response.json()['ERROR'])
+
+    def test_set_response_timeout_must_be_returned(self):
+        environ['PYRECARD_REQUEST_TIMEOUT'] = '0.001'
+        response = plan.create(self.data)
+        self.assertEqual(408, response.status_code)
+        self.assertTrue('error' in response.json())
 
     def test_plan_with_valid_data_should_be_created(self):
         response = plan.create(self.data)
@@ -51,6 +58,9 @@ class PlanTestCase(unittest.TestCase):
         plan.activate(self.data['code'])
         response = plan.fetch(self.data['code'])
         self.assertEqual(response.json()['status'], 'ACTIVE')
+
+    def tearDown(self):
+        environ['PYRECARD_REQUEST_TIMEOUT'] = '5'
 
 
 class CustomersTestCase(unittest.TestCase):
@@ -92,8 +102,9 @@ class SubscriptionTestCase(unittest.TestCase):
         self.data = mock_subscription()
 
     def test_raise_error_if_payment_method_is_invalid(self):
-        with self.assertRaises(ValueError):
-            subscription.set_payment_method('CODE', 'INVALID_METHOD')
+        response = subscription.set_payment_method(self.data['code'], 'INVALID_METHOD')
+        self.assertTrue(response.status_code, 408)
+        self.assertTrue('error' in response.json())
 
     def test_signature_must_be_created(self):
         response = subscription.create(self.data)
@@ -134,7 +145,7 @@ class SubscriptionTestCase(unittest.TestCase):
         self.data['plan']['code'] = data['code']
         code = self.data.pop('code')
         del self.data['customer']
-        response = subscription.change(code, self.data)
+        response = subscription.alter(code, self.data)
         self.assertEqual(response.status_code, 200)
 
     def test_subscription_payment_method_must_be_changed(self):
@@ -143,7 +154,7 @@ class SubscriptionTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_all_invoices_must_be_returned(self):
-        response = subscription.get_all_invoices(self.data['code'])
+        response = subscription.fetch_all_invoices(self.data['code'])
         self.assertEqual(response.status_code, 200)
         self.assertTrue('invoices' in response.json())
 
