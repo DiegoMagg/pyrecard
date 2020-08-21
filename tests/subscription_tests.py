@@ -1,5 +1,7 @@
 import unittest
 import requests
+from time import sleep
+from datetime import datetime, timedelta
 from pyrecard.subscription import plan, customer, subscription, payment
 from pyrecard.utils.factory import url_factory
 from tests.mocker import mock_plan, mock_customer, mock_subscription
@@ -103,7 +105,12 @@ class SubscriptionTestCase(unittest.TestCase):
 
     def test_raise_error_if_payment_method_is_invalid(self):
         response = subscription.set_payment_method(self.data['code'], 'INVALID_METHOD')
-        self.assertTrue(response.status_code, 408)
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue('error' in response.json())
+
+    def test_raise_error_if_subscription_status_is_invalid(self):
+        response = subscription.set_status(self.data['code'], 'INVALID_STATUS')
+        self.assertTrue(response.status_code, 400)
         self.assertTrue('error' in response.json())
 
     def test_signature_must_be_created(self):
@@ -163,6 +170,7 @@ class InvoicesTestCase(unittest.TestCase):
 
     def setUp(self):
         self.data = mock_subscription()
+        self.customer = mock_customer()
 
     def test_invoice_must_be_returned(self):
         sub = subscription.create(self.data)
@@ -182,3 +190,30 @@ class InvoicesTestCase(unittest.TestCase):
         response = payment.payment_details(invoices.json()['payments'][0]['id'])
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json(), dict)
+
+    def test_payment_attempt_must_be_made(self):
+        self.customer['billing_info']['credit_card']['number'] = '5168441223630339'
+        customer.change_card(self.data['customer']['code'], self.customer['billing_info'])
+        sub = subscription.create(self.data).json()
+        invoice_id, sub_code = sub['invoice']['id'], sub['code']
+        sleep(10)
+        sub = subscription.fetch(sub_code)
+        self.assertEqual('Atrasada', sub.json()['invoice']['status']['description'])
+        self.customer['billing_info']['credit_card']['number'] = '4111111111111111'
+        customer.change_card(self.data['customer']['code'], self.customer['billing_info'])
+        response = payment.retry_invoice_payment(invoice_id)
+        self.assertTrue(response.status_code, 200)
+        sub = subscription.fetch(sub_code)
+        self.assertTrue(sub.json()['invoice']['status']['description'], 'Pago')
+
+    def teste_bank_slip(self):
+        self.data['payment_method'] = 'BOLETO'
+        sub = subscription.create(self.data)
+        date = datetime.now() + timedelta(5)
+        self.assertTrue('boleto' in sub.json()['_links'])
+        response = payment.generate_bank_slip(
+            sub.json()['invoice']['id'],
+            {"year": date.year, "month": date.month, "day": date.day},
+        )
+        self.assertTrue(response.status_code, 200)
+        self.assertNotEqual(sub.json()['_links']['boleto'], response.json()['_links']['boleto'])

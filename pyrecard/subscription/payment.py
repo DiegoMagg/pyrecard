@@ -13,5 +13,9 @@ def payment_details(code):
     return pyrequest('GET', f'/payments/{code}')
 
 
-def payment_retry(code):
-    return pyrequest('POST', f'/payments/{code}')
+def retry_invoice_payment(code):
+    return pyrequest('POST', f'/invoices/{code}/retry')
+
+
+def generate_bank_slip(code, json={}):
+    return pyrequest('POST', f'/invoices/{code}/boletos', json)
