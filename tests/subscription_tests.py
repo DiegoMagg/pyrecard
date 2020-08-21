@@ -196,7 +196,7 @@ class InvoicesTestCase(unittest.TestCase):
         customer.change_card(self.data['customer']['code'], self.customer['billing_info'])
         sub = subscription.create(self.data).json()
         invoice_id, sub_code = sub['invoice']['id'], sub['code']
-        sleep(10)
+        sleep(14)
         sub = subscription.fetch(sub_code)
         self.assertEqual('Atrasada', sub.json()['invoice']['status']['description'])
         self.customer['billing_info']['credit_card']['number'] = '4111111111111111'

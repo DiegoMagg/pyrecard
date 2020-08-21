@@ -126,10 +126,6 @@ The **payment** module performs the following operations:
     payment.retry_invoice_payment(code)
     payment.generate_bank_slip(code, json)
 
-`set_status` allows `suspend`, `activate` or `cancel`
-
-`set_payment_method` allows `CREDIT_CARD` or `BOLETO`
-
     >>> from pyrecard.subscription import payment
     >>> response = payment.fetch_invoice('1025240')
     >>> response
