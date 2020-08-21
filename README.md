@@ -17,7 +17,7 @@ Currently working with **subscriptions** operations above.
  - [x] Invoices
  - [x] Payments
  - [ ] Coupon **[WIP]**
- - [ ] Payment retry
+ - [x] Payment retry
 
 
   **Table of Contents**
@@ -123,6 +123,8 @@ The **payment** module performs the following operations:
     payment.fetch_invoice_payments(code)
     payment.payment_details(code)
     payment.fetch_all_invoices(code)
+    payment.retry_invoice_payment(code)
+    payment.generate_bank_slip(code, json)
 
 `set_status` allows `suspend`, `activate` or `cancel`
 
