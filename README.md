@@ -11,34 +11,34 @@ Wirecard works with a base64 hash made up of its `TOKEN:KEY` in its operations. 
 
 Currently working with **subscriptions** operations above.
 
- - [x] Plans
- - [x] Customers
- - [x] Subscriptions
- - [x] Invoices
- - [x] Payments
- - [ ] Coupon **[WIP]**
- - [x] Payment retry
+- [x] Plans
+- [x] Customers
+- [x] Subscriptions
+- [x] Invoices
+- [x] Payments
+- [ ] Coupon **[WIP]**
+- [x] Payment retry
 
-  **Table of Contents**
+**Table of Contents**
 
- 1. Installation
- 2. Usage
- 3. Used by
+1. Installation
+2. Usage
+3. Used by
 
 ## Installation
 
-  Minimal setup:
+Minimal setup:
 
-```bash
+```shell
 $ pip install pyrecard
 $ export SANDBOX_KEY=TOKEN:KEY
 $ export PRODUCTION_KEY=TOKEN:KEY
 ```
 
-  Recomended setup with [pipenv](https://pipenv.pypa.io/en/latest/):
+Setup with [pipenv](https://pipenv.pypa.io/en/latest/) (recomended):
 
-```bash
- $ pipenv install pyrecard
+```shell
+$ pipenv install pyrecard
 ```
 
 Create a `.env` file with required data:
