@@ -30,14 +30,14 @@ Currently working with **subscriptions** operations above.
   Minimal setup:
 
 ```bash
-    $ pip install pyrecard
-    $ export SANDBOX_KEY=TOKEN:KEY
-    $ export PRODUCTION_KEY=TOKEN:KEY
+$ pip install pyrecard
+$ export SANDBOX_KEY=TOKEN:KEY
+$ export PRODUCTION_KEY=TOKEN:KEY
 ```
 
   Recomended setup with [pipenv](https://pipenv.pypa.io/en/latest/):
 
-   ```bash
+```bash
  $ pipenv install pyrecard
 ```
 
@@ -60,13 +60,13 @@ The **plan** module performs the following operations:
 All operations above returns a response.
 
 ```python
-    >>> from pyrecard.subscription import plan
-    >>> response = plan.fetch("plan101")
-    >>> response
-    <Response [200]>
-    >>> response.json()
-    {'setup_fee': 500, 'amount': 990, 'code': 'plan101', 'name': 'Plano Especial', 'billing_cycles': 12, 'description': 'Descrição do Plano Especial', 'interval': {'unit': 'MONTH', 'length': 1}, 'creation_date': {'month': 1, 'hour': 0, 'year': 2016, 'day': 8, 'minute': 0, 'second': 0}, 'payment_method': 'CREDIT_CARD', 'max_qty': 1, 'trial': {'hold_setup_fee': True, 'days': 30, 'enabled': True}, 'status': 'ACTIVE'}
-    >>>
+>>> from pyrecard.subscription import plan
+>>> response = plan.fetch("plan101")
+>>> response
+<Response [200]>
+>>> response.json()
+{'setup_fee': 500, 'amount': 990, 'code': 'plan101', 'name': 'Plano Especial', 'billing_cycles': 12, 'description': 'Descrição do PlanoEspecial', 'interval': {'unit': 'MONTH', 'length': 1}, 'creation_date': {'month': 1, 'hour': 0, 'year': 2016, 'day': 8, 'minute': 0, 'second':0}, 'payment_method': 'CREDIT_CARD', 'max_qty': 1, 'trial': {'hold_setup_fee': True, 'days': 30, 'enabled': True}, 'status': 'ACTIVE'}
+>>>
 ```
 
 ### subscriptions.customer
@@ -82,12 +82,12 @@ The **customer** module performs the following operations:
 Set `new_vault` True to create a user with billing data.
 
 ```python
-    >>> from pyrecard.subscription import customer
-    >>> customer_data = customer.fetch('cliente01').json()
-    >>> customer_data['address']['state'] = 'MG'
-    >>> response = customer.alter('cliente01', customer_data)
-    >>> response
-    <Response [200]>
+>>> from pyrecard.subscription import customer
+>>> customer_data = customer.fetch('cliente01').json()
+>>> customer_data['address']['state'] = 'MG'
+>>> response = customer.alter('cliente01', customer_data)
+>>> response
+<Response [200]>
 ```
 
 ### subscription.subscription
@@ -109,10 +109,10 @@ Set `new_customer` True to create a subscription with a new user.
 `set_payment_method` allows `CREDIT_CARD` or `BOLETO`
 
 ```python
-    >>> from pyrecard.subscription import subscription
-    >>> response = subscription.set_status('assinatura01',  'suspend')
-    >>> response
-    <Response [200]>
+>>> from pyrecard.subscription import subscription
+>>> response = subscription.set_status('assinatura01',  'suspend')
+>>> response
+<Response [200]>
 ```
 
 More information check the [subscription documentation](https://dev.wirecard.com.br/v1.5/reference#assinaturas)
@@ -129,12 +129,12 @@ The **payment** module performs the following operations:
 - payment.generate_bank_slip(code, json)
 
 ```python
-    >>> from pyrecard.subscription import payment
-    >>> response = payment.fetch_invoice('1025240')
-    >>> response
-    <Response [200]>
-    >>> response.json()
-    {'subscription_code': 'assinatura01', 'amount': 0, 'id': 1025240, 'creation_date': {'month': 1, 'hour': 14, 'year': 2016, 'day': 8, 'minute': 28, 'second': 52}, 'occurrence': 1, 'plan': {'code': 'plan101', 'name': 'Plano Especial'}, 'items': [{'amount': 0, 'type': 'Período de trial'}], 'customer': {'code': 'cliente03', 'fullname': 'Nome Sobrenome', 'email': 'nome@exemplo.com.br'}, 'status': {'code': 3, 'description': 'Pago'}}
+>>> from pyrecard.subscription import payment
+>>> response = payment.fetch_invoice('1025240')
+>>> response
+<Response [200]>
+>>> response.json()
+{'subscription_code': 'assinatura01', 'amount': 0, 'id': 1025240, 'creation_date': {'month': 1, 'hour': 14, 'year': 2016, 'day': 8, 'minute':28, 'second': 52}, 'occurrence': 1, 'plan': {'code': 'plan101', 'name': 'Plano Especial'}, 'items': [{'amount': 0, 'type': 'Período de trial'}, 'customer': {'code': 'cliente03', 'fullname': 'Nome Sobrenome', 'email': 'nome@exemplo.com.br'}, 'status': {'code': 3, 'description': 'Pago'}
 ```
 
 ## Used by:
