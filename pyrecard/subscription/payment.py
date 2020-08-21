@@ -1,31 +1,17 @@
-import requests
-from os import environ
-from pyrecard.utils.factory import url_factory, header_factory
-from pyrecard.decorators import set_response_timeout
+from pyrecard.utils.pyrequest import pyrequest
 
 
-@set_response_timeout
 def fetch_invoice(code):
-    return requests.get(
-        url_factory(f'/invoices/{code}'),
-        headers=header_factory(),
-        timeout=float(environ.get('PYRECARD_REQUEST_TIMEOUT', 5)),
-    )
+    return pyrequest('GET', f'/invoices/{code}')
 
 
-@set_response_timeout
 def fetch_invoice_payments(code):
-    return requests.get(
-        url_factory(f'/invoices/{code}/payments'),
-        headers=header_factory(),
-        timeout=float(environ.get('PYRECARD_REQUEST_TIMEOUT', 5)),
-    )
+    return pyrequest('GET', f'/invoices/{code}/payments')
 
 
-@set_response_timeout
 def payment_details(code):
-    return requests.get(
-        url_factory(f'/payments/{code}'),
-        headers=header_factory(),
-        timeout=float(environ.get('PYRECARD_REQUEST_TIMEOUT', 5)),
-    )
+    return pyrequest('GET', f'/payments/{code}')
+
+
+def payment_retry(code):
+    return pyrequest('POST', f'/payments/{code}')
