@@ -3,7 +3,7 @@ from requests.models import Response
 from re import match
 from base64 import b64encode
 from pyrecard.exceptions import MissingKey, InvalidKey
-from pyrecard import sdk
+from pyrecard.__version__ import __version__
 from json import dumps
 
 
@@ -29,7 +29,7 @@ def b64_factory(key=None):
 
 
 def header_factory():
-    headers = {'User-Agent': f'Pyrecard - {sdk.VERSION}', 'Content-Type': 'application/json'}
+    headers = {'User-Agent': f'Pyrecard - {__version__}', 'Content-Type': 'application/json'}
     if environ.get('PYRECARD_ENV', '').lower() == 'production':
         return {**headers, **b64_factory(environ.get('PRODUCTION_KEY'))}
     return {**headers, **b64_factory(environ.get('SANDBOX_KEY'))}

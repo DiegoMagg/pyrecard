@@ -17,7 +17,7 @@ def mock_plan():
         'max_qty': 1,
         'interval': {'length': 1, 'unit': 'MONTH'},
         'billing_cycles': 12,
-        'payment_method': 'CREDIT_CARD'
+        'payment_method': 'ALL'
     }
 
 
@@ -30,7 +30,7 @@ def mock_customer():
         'code': ''.join(choices('ABCDEF1234567890', k=10)),
         'email': 'test@user.com',
         'fullname': 'Test User',
-        'cpf': '22222222222',
+        'cpf': '36598211018',  # cpf obtained in https://www.4devs.com.br/gerador_de_cpf
         'phone_area_code': '11',
         'phone_number': '934343434',
         'birthdate_day': '26',
