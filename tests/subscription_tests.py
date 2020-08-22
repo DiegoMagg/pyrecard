@@ -4,14 +4,14 @@ from time import sleep
 from datetime import datetime, timedelta
 from pyrecard.subscription import plan, customer, subscription, payment
 from pyrecard.utils.factory import url_factory
-from tests.mocker import mock_plan, mock_customer, mock_subscription
+from pyrecard.test import mock
 from os import environ
 
 
 class PlanTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.data = mock_plan()
+        self.data = mock.plan_data()
 
     def test_wirecard_sandbox_must_be_accessible(self):
         response = requests.get(url_factory())
@@ -68,7 +68,7 @@ class PlanTestCase(unittest.TestCase):
 class CustomersTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.data = mock_customer()
+        self.data = mock.customer_data()
 
     def test_customer_with_valid_data_must_be_created(self):
         response = customer.create(self.data)
@@ -101,7 +101,7 @@ class CustomersTestCase(unittest.TestCase):
 class SubscriptionTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.data = mock_subscription()
+        self.data = mock.subscription_data()
 
     def test_raise_error_if_payment_method_is_invalid(self):
         response = subscription.set_payment_method(self.data['code'], 'INVALID_METHOD')
@@ -119,7 +119,7 @@ class SubscriptionTestCase(unittest.TestCase):
         self.assertEqual(response.json()['message'], 'Assinatura criada com sucesso')
 
     def test_signature_must_be_created_with_new_customer(self):
-        self.data['customer'] = mock_customer()
+        self.data['customer'] = mock.customer_data()
         response = subscription.create(self.data, True)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()['message'], 'Assinatura criada com sucesso')
@@ -147,7 +147,7 @@ class SubscriptionTestCase(unittest.TestCase):
 
     def test_subscription_data_must_be_changed(self):
         subscription.create(self.data)
-        data = mock_plan()
+        data = mock.plan_data()
         plan.create(data)
         self.data['plan']['code'] = data['code']
         code = self.data.pop('code')
@@ -169,8 +169,8 @@ class SubscriptionTestCase(unittest.TestCase):
 class InvoicesTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.data = mock_subscription()
-        self.customer = mock_customer()
+        self.data = mock.subscription_data()
+        self.customer = mock.customer_data()
 
     def test_invoice_must_be_returned(self):
         sub = subscription.create(self.data)

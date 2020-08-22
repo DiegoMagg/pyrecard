@@ -3,7 +3,7 @@ from datetime import datetime
 from pyrecard.subscription import plan, customer
 
 
-def mock_plan():
+def plan_data():
     '''
        The following data has been taken and adapted from
        https://dev.wirecard.com.br/v1.5/reference#criar-plano
@@ -21,7 +21,7 @@ def mock_plan():
     }
 
 
-def mock_customer():
+def customer_data():
     '''
        The following data has been taken and adapted from
        https://dev.wirecard.com.br/v1.5/reference#criar-assinante
@@ -30,7 +30,7 @@ def mock_customer():
         'code': ''.join(choices('ABCDEF1234567890', k=10)),
         'email': 'test@user.com',
         'fullname': 'Test User',
-        'cpf': '36598211018',  # cpf obtained in https://www.4devs.com.br/gerador_de_cpf
+        'cpf': '36598211018',  # CPF obtained in https://www.4devs.com.br/gerador_de_cpf
         'phone_area_code': '11',
         'phone_number': '934343434',
         'birthdate_day': '26',
@@ -46,24 +46,28 @@ def mock_customer():
             'country': 'BRA',
             'zipcode': '00000000',
         },
-        'billing_info': {
-            'credit_card': {
-                'holder_name': 'Test User',
-                'number': '4111111111111111',
-                'expiration_month': '06',
-                'expiration_year': str(datetime.now().year+2)[2:]
-            }
+        'billing_info': credit_card_data()
+    }
+
+
+def credit_card_data():
+    return {
+        'credit_card': {
+            'holder_name': 'Test User',
+            'number': '4111111111111111',
+            'expiration_month': '06',
+            'expiration_year': str(datetime.now().year+2)[2:]
         }
     }
 
 
-def mock_subscription():
+def subscription_data():
     '''
        The following data has been taken and adapted from
        https://dev.wirecard.com.br/v1.5/reference#assinaturas
     '''
-    mocked_plan = mock_plan()
-    mocked_customer = mock_customer()
+    mocked_plan = plan_data()
+    mocked_customer = customer_data()
     plan.create(mocked_plan)
     customer.create(mocked_customer, new_vault=True)
     return {
