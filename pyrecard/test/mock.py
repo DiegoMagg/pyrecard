@@ -46,13 +46,17 @@ def customer_data():
             'country': 'BRA',
             'zipcode': '00000000',
         },
-        'billing_info': {
-            'credit_card': {
-                'holder_name': 'Test User',
-                'number': '4111111111111111',
-                'expiration_month': '06',
-                'expiration_year': str(datetime.now().year+2)[2:]
-            }
+        'billing_info': credit_card_data()
+    }
+
+
+def credit_card_data():
+    return {
+        'credit_card': {
+            'holder_name': 'Test User',
+            'number': '4111111111111111',
+            'expiration_month': '06',
+            'expiration_year': str(datetime.now().year+2)[2:]
         }
     }
 
@@ -62,8 +66,8 @@ def subscription_data():
        The following data has been taken and adapted from
        https://dev.wirecard.com.br/v1.5/reference#assinaturas
     '''
-    mocked_plan = plan()
-    mocked_customer = customer()
+    mocked_plan = plan_data()
+    mocked_customer = customer_data()
     plan.create(mocked_plan)
     customer.create(mocked_customer, new_vault=True)
     return {
