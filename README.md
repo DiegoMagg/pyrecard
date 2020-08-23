@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.com/DiegoMagg/pyrecard.svg?token=tABSMskBskhEHyyfYxzM&branch=master)](https://github.com/DiegoMagg/pyrecard)
 [![codecov](https://codecov.io/gh/DiegoMagg/pyrecard/branch/master/graph/badge.svg?token=RT3ZXODSAH)](https://codecov.io/gh/DiegoMagg/pyrecard)
 
-A Python lib for brazilian [Wirecard](https://wirecard.com.br/) gateway.
+A Python lib for brazilian [Wirecard](https://wirecard.com.br/) payment gateway.
 
 Wirecard works with a base64 hash made up of its `TOKEN:KEY` in its operations. Pyrecard uses two environment variables with these sets `SANDBOX_KEY` and `PRODUCTION_KEY` and generates the necessary hash for an operation. This lib works in SANDBOX by default, to use PRODUCTION mode set environment variable `PYRECARD_ENV=production`
 
