@@ -8,10 +8,11 @@ def plan_data():
        The following data has been taken and adapted from
        https://dev.wirecard.com.br/v1.5/reference#criar-plano
     '''
+    code = ''.join(choices('ABCDEF1234567890', k=10))
     return {
-        'code': ''.join(choices('ABCDEF1234567890', k=10)),
-        'name': 'Plano Especial',
-        'description': 'Descrição do Plano Especial',
+        'code': code,
+        'name': f'Plano {code}',
+        'description': f'Descrição do Plano {code}',
         'amount': 990,
         'setup_fee': 500,
         'max_qty': 1,
@@ -26,11 +27,12 @@ def customer_data():
        The following data has been taken and adapted from
        https://dev.wirecard.com.br/v1.5/reference#criar-assinante
     '''
+    code = ''.join(choices('ABCDEF1234567890', k=10))
     return {
-        'code': ''.join(choices('ABCDEF1234567890', k=10)),
-        'email': 'test@user.com',
-        'fullname': 'Test User',
-        'cpf': '36598211018',  # CPF obtained in https://www.4devs.com.br/gerador_de_cpf
+        'code': code,
+        'email': f'cliente{code}@provedor.com',
+        'fullname': f'Usuário {code}',
+        'cpf': '36598211018',  # cpf obtained in https://www.4devs.com.br/gerador_de_cpf
         'phone_area_code': '11',
         'phone_number': '934343434',
         'birthdate_day': '26',
@@ -46,17 +48,13 @@ def customer_data():
             'country': 'BRA',
             'zipcode': '00000000',
         },
-        'billing_info': credit_card_data()
-    }
-
-
-def credit_card_data():
-    return {
-        'credit_card': {
-            'holder_name': 'Test User',
-            'number': '4111111111111111',
-            'expiration_month': '06',
-            'expiration_year': str(datetime.now().year+2)[2:]
+        'billing_info': {
+            'credit_card': {
+                'holder_name': 'Test User',
+                'number': '4111111111111111',
+                'expiration_month': '06',
+                'expiration_year': str(datetime.now().year+2)[2:]
+            }
         }
     }
 
@@ -77,3 +75,4 @@ def subscription_data():
         'plan': {'code': mocked_plan['code']},
         'customer': {'code': mocked_customer['code']},
     }
+
