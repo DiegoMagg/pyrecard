@@ -2,7 +2,7 @@ import unittest
 import requests
 from time import sleep
 from datetime import datetime, timedelta
-from pyrecard.subscription import plan, customer, subscription, payment
+from pyrecard.subscription import plan, customer, subscription, payment, coupon, webhook
 from pyrecard.utils.factory import url_factory
 from pyrecard.test import mock
 from os import environ
@@ -217,3 +217,68 @@ class InvoicesTestCase(unittest.TestCase):
         )
         self.assertTrue(response.status_code, 200)
         self.assertNotEqual(sub.json()['_links']['boleto'], response.json()['_links']['boleto'])
+
+
+class CouponTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.data = mock.coupon_data()
+        self.json = {'coupon': {'code': self.data['code']}}
+
+    def test_returns_error_if_status_is_not_valid(self):
+        response = coupon.set_status(self.data['code'], 'invalid-status')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['error'], 'The coupon status must be "active" or "inactive"')
+
+    def test_coupon_must_be_created(self):
+        response = coupon.create(self.data)
+        self.assertTrue(response.ok)
+        self.assertTrue("creation_date" in response.json())
+
+    def test_coupon_must_be_applied(self):
+        sub_data = mock.subscription_data()
+        sub = subscription.create(sub_data)
+        self.assertFalse('coupon' in sub.json())
+        self.assertTrue(coupon.create(self.data).ok)
+        response = coupon.apply(sub_data['code'], self.data['code'])
+        self.assertTrue(response.ok)
+        sub = subscription.fetch(sub_data['code'])
+        self.assertTrue('coupon' in sub.json())
+
+    def test_coupon_must_be_returned(self):
+        coupon.create(self.data)
+        response = coupon.fetch(self.data['code'])
+        self.assertTrue(response.ok)
+        self.assertTrue('creation_date' in response.json())
+
+    def test_all_coupons_must_be_returned(self):
+        response = coupon.fetch_all()
+        self.assertTrue(response.ok)
+        self.assertTrue('coupons' in response.json())
+        self.assertIsInstance(response.json()['coupons'], list)
+
+    def test_coupon_activation_must_change(self):
+        data = coupon.create(self.data)
+        self.assertEqual(data.json()['status'], 'ACTIVE')
+        response = coupon.set_status(self.data['code'], 'inactive')
+        self.assertTrue(response.ok)
+        self.assertNotEqual(response.json()['status'], 'ACTIVE')
+        response = coupon.set_status(self.data['code'], 'active')
+        self.assertEqual(response.json()['status'], 'ACTIVE')
+
+    def test_coupon_must_be_removed_from_subscription(self):
+        sub_data = mock.subscription_data()
+        sub = subscription.create(sub_data)
+        self.assertFalse('coupon' in sub.json())
+        self.assertTrue(coupon.create(self.data).ok)
+        self.assertTrue(coupon.remove(sub_data['code']).ok)
+        response = subscription.fetch(sub_data['code'])
+        self.assertFalse('coupon' in response.json())
+
+
+class WebhookTestCase(unittest.TestCase):
+
+    def test_webhook_settings_must_be_set(self):
+        self.assertTrue(
+            webhook.preferences('http://exemploldeurl.com.br/assinaturas', True, True).ok,
+        )

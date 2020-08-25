@@ -9,15 +9,7 @@ A Python lib for brazilian [Wirecard](https://wirecard.com.br/) payment gateway.
 
 Wirecard works with a base64 hash made up of its `TOKEN:KEY` in its operations. Pyrecard uses two environment variables with these sets `SANDBOX_KEY` and `PRODUCTION_KEY` and generates the necessary hash for an operation. This lib works in SANDBOX by default, to use PRODUCTION mode set environment variable `PYRECARD_ENV=production`
 
-Currently working with **subscriptions** operations above.
-
-- [x] Plans
-- [x] Customers
-- [x] Subscriptions
-- [x] Invoices
-- [x] Payments
-- [ ] Coupon **[WIP]**
-- [x] Payment retry
+Currently working with **subscriptions** only.
 
 **Table of Contents**
 
@@ -74,10 +66,10 @@ All operations above returns a response.
 The **customer** module performs the following operations:
 
 - customer.create(json, new_vault=False)
-- customer.alter(code, json)
-- customer.fetch(code)
+- customer.alter(customer_code, json)
+- customer.fetch(customer_code)
 - customer.fetch_all()
-- customer.change_card(code, json)
+- customer.change_card(customer_code, json)
 
 Set `new_vault` True to create a user with billing data.
 
@@ -95,12 +87,12 @@ Set `new_vault` True to create a user with billing data.
 The **subscription** module performs the following operations:
 
 - subscription.create(json, new_customer=False)
-- subscription.alter(code, json)
-- subscription.fetch(code)
+- subscription.alter(subscription_code, json)
+- subscription.fetch(subscription_code)
 - subscription.fetch_all()
-- subscription.set_status(code, status)
-- subscription.set_payment_method(code, method)
-- subscription.fetch_all_invoices(code)
+- subscription.set_status(subscription_code, status)
+- subscription.set_payment_method(subscription_code, method)
+- subscription.fetch_all_invoices(subscription_code)
 
 Set `new_customer` True to create a subscription with a new user.
 
@@ -121,12 +113,11 @@ More information check the [subscription documentation](https://dev.wirecard.com
 
 The **payment** module performs the following operations:
 
-- payment.fetch_invoice(code)
-- payment.fetch_invoice_payments(code)
-- payment.payment_details(code)
-- payment.fetch_all_invoices(code)
-- payment.retry_invoice_payment(code)
-- payment.generate_bank_slip(code, json)
+- payment.fetch_invoice(invoice_id)
+- payment.fetch_invoice_payments(invoice_code)
+- payment.payment_details(payment_code)
+- payment.retry_invoice_payment(invoice_code)
+- payment.generate_bank_slip(invoice_code, json)
 
 ```python
 >>> from pyrecard.subscription import payment
@@ -137,7 +128,28 @@ The **payment** module performs the following operations:
 {'subscription_code': 'assinatura01', 'amount': 0, 'id': 1025240, 'creation_date': {'month': 1, 'hour': 14, 'year': 2016, 'day': 8, 'minute':28, 'second': 52}, 'occurrence': 1, 'plan': {'code': 'plan101', 'name': 'Plano Especial'}, 'items': [{'amount': 0, 'type': 'Período de trial'}, 'customer': {'code': 'cliente03', 'fullname': 'Nome Sobrenome', 'email': 'nome@exemplo.com.br'}, 'status': {'code': 3, 'description': 'Pago'}
 ```
 
-For additional information, check Wirecard [docs](https://dev.wirecard.com.br/v1.5/reference "Wirecard signature docs").
+### subscription.coupon
+
+The **coupon** module performs the following operations:
+
+- coupon.create(json)
+- coupon.apply(subscription_code, coupon_code)
+- coupon.fetch(coupon_code)
+- coupon.fetch_all()
+- coupon.set_status(coupon_code, status)
+- coupon.remove(coupon_code)
+
+```python
+>>> from pyrecard.subscription import coupon
+>>> response = coupon.set_status('coupon-0001', 'active')
+>>> response
+<Response [400]>
+>>> response.json()
+{'errors': [{'code': 'MA174', 'description': 'Coupon expirado.'}]}
+```
+
+More information check the [coupon documentation](https://dev.wirecard.com.br/v1.5/reference#coupons)
+
 
 ## Used by:
 

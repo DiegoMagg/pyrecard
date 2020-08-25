@@ -5,20 +5,20 @@ def create(json):
     return pyrequest('POST', '/plans', json)
 
 
-def alter(code, json):
-    return pyrequest('PUT', f'/plans/{code}', json)
+def alter(plan_code, json):
+    return pyrequest('PUT', f'/plans/{plan_code}', json)
 
 
-def activate(code):
-    return pyrequest('PUT', f'/plans/{code}/activate')
+def activate(plan_code):
+    return pyrequest('PUT', f'/plans/{plan_code}/activate')
 
 
-def inactivate(code):
-    return pyrequest('PUT', f'/plans/{code}/inactivate')
+def inactivate(plan_code):
+    return pyrequest('PUT', f'/plans/{plan_code}/inactivate')
 
 
-def fetch(code):
-    return pyrequest('GET', f'/plans/{code}')
+def fetch(plan_code):
+    return pyrequest('GET', f'/plans/{plan_code}')
 
 
 def fetch_all():
