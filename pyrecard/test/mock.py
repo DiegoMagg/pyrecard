@@ -76,3 +76,30 @@ def subscription_data():
         'customer': {'code': mocked_customer['code']},
     }
 
+
+def coupon_data():
+    '''
+       The following data has been taken and adapted from
+       https://dev.wirecard.com.br/v1.5/reference#criar-coupon
+    '''
+    code = ''.join(choices('ABCDEF1234567890', k=10))
+    return {
+        'code': f'coupon-{code}',
+        'name': f'Coupon {code}',
+        'description': 'My new coupon',
+        'discount': {
+            'value': 10000,
+            'type': 'percent'
+        },
+        'status': 'active',
+        'duration': {
+            'type': 'repeating',
+            'occurrences': 12
+        },
+        'max_redemptions': 1000,
+        'expiration_date': {
+            'year': datetime.now().year,
+            'month': datetime.now().month,
+            'day': datetime.now().day,
+        }
+    }
