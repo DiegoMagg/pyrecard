@@ -225,6 +225,11 @@ class CouponTestCase(unittest.TestCase):
         self.data = mock.coupon_data()
         self.json = {'coupon': {'code': self.data['code']}}
 
+    def test_returns_error_if_status_is_not_valid(self):
+        response = coupon.set_status(self.data['code'], 'invalid-status')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['error'], 'The coupon status must be "active" or "inactive"')
+
     def test_coupon_must_be_created(self):
         response = coupon.create(self.data)
         self.assertTrue(response.ok)
@@ -235,7 +240,7 @@ class CouponTestCase(unittest.TestCase):
         sub = subscription.create(sub_data)
         self.assertFalse('coupon' in sub.json())
         self.assertTrue(coupon.create(self.data).ok)
-        response = coupon.apply(sub_data['code'], self.json)
+        response = coupon.apply(sub_data['code'], self.data['code'])
         self.assertTrue(response.ok)
         sub = subscription.fetch(sub_data['code'])
         self.assertTrue('coupon' in sub.json())

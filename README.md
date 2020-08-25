@@ -66,10 +66,10 @@ All operations above returns a response.
 The **customer** module performs the following operations:
 
 - customer.create(json, new_vault=False)
-- customer.alter(code, json)
-- customer.fetch(code)
+- customer.alter(customer_code, json)
+- customer.fetch(customer_code)
 - customer.fetch_all()
-- customer.change_card(code, json)
+- customer.change_card(customer_code, json)
 
 Set `new_vault` True to create a user with billing data.
 
@@ -87,12 +87,12 @@ Set `new_vault` True to create a user with billing data.
 The **subscription** module performs the following operations:
 
 - subscription.create(json, new_customer=False)
-- subscription.alter(code, json)
-- subscription.fetch(code)
+- subscription.alter(subscription_code, json)
+- subscription.fetch(subscription_code)
 - subscription.fetch_all()
-- subscription.set_status(code, status)
-- subscription.set_payment_method(code, method)
-- subscription.fetch_all_invoices(code)
+- subscription.set_status(subscription_code, status)
+- subscription.set_payment_method(subscription_code, method)
+- subscription.fetch_all_invoices(subscription_code)
 
 Set `new_customer` True to create a subscription with a new user.
 
@@ -113,12 +113,11 @@ More information check the [subscription documentation](https://dev.wirecard.com
 
 The **payment** module performs the following operations:
 
-- payment.fetch_invoice(code)
-- payment.fetch_invoice_payments(code)
-- payment.payment_details(code)
-- payment.fetch_all_invoices(code)
-- payment.retry_invoice_payment(code)
-- payment.generate_bank_slip(code, json)
+- payment.fetch_invoice(invoice_id)
+- payment.fetch_invoice_payments(invoice_code)
+- payment.payment_details(payment_code)
+- payment.retry_invoice_payment(invoice_code)
+- payment.generate_bank_slip(invoice_code, json)
 
 ```python
 >>> from pyrecard.subscription import payment
@@ -151,8 +150,6 @@ The **coupon** module performs the following operations:
 
 More information check the [coupon documentation](https://dev.wirecard.com.br/v1.5/reference#coupons)
 
-
-Wirecard [docs](https://dev.wirecard.com.br/v1.5/reference "Wirecard signature docs").
 
 ## Used by:
 
