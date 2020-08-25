@@ -11,4 +11,4 @@ def preferences(url, email_merchant_enabled, customer_enabled):
             }
         }
     }
-    return pyrequest('POST', '/users/preferences', data)
+    return pyrequest('POST', '/assinaturas/v1/users/preferences', data)

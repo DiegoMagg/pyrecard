@@ -8,7 +8,7 @@ from json import dumps
 
 
 def url_factory(path=''):
-    url = 'https://{}.moip.com.br/assinaturas/v1{}'
+    url = 'https://{}.moip.com.br{}'
     production = environ.get('PYRECARD_ENV') == 'production'
     return url.format('api', path) if production else url.format('sandbox', path)
 

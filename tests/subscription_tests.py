@@ -14,7 +14,7 @@ class PlanTestCase(unittest.TestCase):
         self.data = mock.plan_data()
 
     def test_wirecard_sandbox_must_be_accessible(self):
-        response = requests.get(url_factory())
+        response = requests.get(url_factory('/assinaturas/v1'))
         self.assertEqual(401, response.status_code)
         self.assertEqual('Token or Key are invalids', response.json()['ERROR'])
 
@@ -240,6 +240,7 @@ class CouponTestCase(unittest.TestCase):
         sub = subscription.create(sub_data)
         self.assertFalse('coupon' in sub.json())
         self.assertTrue(coupon.create(self.data).ok)
+        sleep(2)
         response = coupon.apply(sub_data['code'], self.data['code'])
         self.assertTrue(response.ok)
         sub = subscription.fetch(sub_data['code'])
