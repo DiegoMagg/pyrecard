@@ -16,7 +16,7 @@ def fetch_all():
 
 def set_status(code, status):
     message = 'The subscription status must be "suspend", "activate" or "cancel"'
-    if str(status).lower() not in ['suspend', 'activate', 'cancel']:
+    if str(status).lower() not in ('suspend', 'activate', 'cancel'):
         return response_factory(400, {'error': message})
     return pyrequest('PUT', f'/subscriptions/{code}/{status}')
 
@@ -26,7 +26,7 @@ def alter(code, json):
 
 
 def set_payment_method(code, method):
-    if str(method).upper() not in ['CREDIT_CARD', 'BOLETO']:
+    if str(method).upper() not in ('CREDIT_CARD', 'BOLETO'):
         return response_factory(400, {'error': 'The payment method must be "CREDIT_CARD" or "BOLETO"'})
     return pyrequest(
         'PUT',
