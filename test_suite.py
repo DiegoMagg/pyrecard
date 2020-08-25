@@ -1,7 +1,7 @@
 import unittest
-from tests import subscription_tests, factory_tests
+from tests import subscription_tests, factory_tests, ecommerce_tests
 
-MODULES = (factory_tests, subscription_tests)
+MODULES = (factory_tests, subscription_tests, ecommerce_tests)
 
 
 if __name__ == "__main__":

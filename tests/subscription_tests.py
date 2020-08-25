@@ -191,22 +191,17 @@ class InvoicesTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json(), dict)
 
-    def test_payment_attempt_must_be_made(self):
-        self.customer['billing_info']['credit_card']['number'] = '5168441223630339'
-        customer.change_card(self.data['customer']['code'], self.customer['billing_info'])
+    def test_payment_retry_must_return_error_if_subscription_is_active(self):
         sub = subscription.create(self.data).json()
         invoice_id, sub_code = sub['invoice']['id'], sub['code']
-        sleep(14)
+        sleep(14)  # Waiting for payment processing.
         sub = subscription.fetch(sub_code)
-        self.assertEqual('Atrasada', sub.json()['invoice']['status']['description'])
-        self.customer['billing_info']['credit_card']['number'] = '4111111111111111'
-        customer.change_card(self.data['customer']['code'], self.customer['billing_info'])
+        self.assertEqual('Pago', sub.json()['invoice']['status']['description'])
         response = payment.retry_invoice_payment(invoice_id)
-        self.assertTrue(response.status_code, 200)
-        sub = subscription.fetch(sub_code)
-        self.assertTrue(sub.json()['invoice']['status']['description'], 'Pago')
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue('errors' in response.json())
 
-    def teste_bank_slip(self):
+    def test_generate_bank_slip(self):
         self.data['payment_method'] = 'BOLETO'
         sub = subscription.create(self.data)
         date = datetime.now() + timedelta(5)
