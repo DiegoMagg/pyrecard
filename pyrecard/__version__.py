@@ -1,7 +1,7 @@
 __title__ = 'pyrecard'
 __description__ = 'A Python lib for brazilian Wirecard payment gateway.'
 __url__ = 'https://github.com/DiegoMagg/pyrecard'
-__version__ = '0.1.2'
+__version__ = '1.0.0'
 __author__ = 'Diego Magalhães'
 __author_email__ = 'dmlmagal@gmail.com'
 __license__ = 'MIT'
