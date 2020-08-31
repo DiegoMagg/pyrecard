@@ -1,4 +1,5 @@
 from random import choices
+from pyrecard.ecommerce import customer
 from datetime import datetime
 
 
@@ -72,32 +73,26 @@ def mock_credit_card():
             'holder': {
                 'fullname': 'João Silva',
                 'birthdate': '1990-10-22',
-                'taxDocument': {
-                    'type': 'CPF',
-                    'number': '22288866644',
-                },
-                'phone': {
-                    'countryCode': '55',
-                    'areaCode': '11',
-                    'number': '55552266'
-                }
+                'taxDocument': {'type': 'CPF', 'number': '22288866644'},
+                'phone': {'countryCode': '55', 'areaCode': '11', 'number': '55552266'},
             }
         }
     }
 
 
 def mock_order():
-    code = ''.join(choices('ABCDEF1234567890', k=10))
+    response = customer.create(mock_client())
     return {
-        'ownId': f'ORDER-{code}',
-        'amount': {'currency': 'BRL', 'subtotals': {'shipping': 1000}},
+        'ownId': f'ORDER-{"".join(choices("ABCDEF1234567890", k=10))}',
+        'amount': {'currency': 'BRL', 'subtotals': {'shipping': 1500}},
         'items': [
             {
-                'product': 'Descrição do pedido ORDER-{code}',
+                'product': 'Descrição do pedido',
                 'category': 'CLOTHING',
                 'quantity': 1,
-                'detail': 'Camisa azul',
-                'price': 12000,
+                'detail': 'Camiseta estampada branca',
+                'price': 9500
             }
         ],
+        'customer': {'id': response.json()['id']},
     }

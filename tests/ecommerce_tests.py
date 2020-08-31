@@ -1,5 +1,5 @@
 import unittest
-from pyrecard.ecommerce import customer
+from pyrecard.ecommerce import customer, order
 from pyrecard.test.ecommerce_mock import mock_client, mock_credit_card, mock_order
 
 
@@ -42,3 +42,27 @@ class CustomerTestCase(unittest.TestCase):
         self.assertTrue(response.ok)
         self.assertTrue('customers' in response.json())
         self.assertIsInstance(response.json()['customers'], list)
+
+
+class OrderTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.data = mock_order()
+
+    def test_order_must_be_created(self):
+        response = order.create(self.data)
+        self.assertTrue(response.ok)
+        self.assertTrue('CREATED' in response.json().values())
+
+    def test_order_data_must_be_returned(self):
+        orders = order.fetch_all()
+        self.assertTrue(orders.ok)
+        response = order.fetch(orders.json()['orders'][0]['id'])
+        self.assertTrue(response.ok)
+        self.assertIsInstance(response.json(), dict)
+
+    def test_all_orders_must_be_returned(self):
+        response = order.fetch_all()
+        self.assertTrue(response.status_code, 200)
+        self.assertTrue('orders' in response.json())
+        self.assertIsInstance(response.json()['orders'], list)
