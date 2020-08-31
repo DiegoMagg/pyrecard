@@ -1,21 +1,24 @@
 from pyrecard.utils.pyrequest import pyrequest
 
 
-def fetch_invoice(invoice_id):
-    return pyrequest('GET', f'/invoices/{invoice_id}')
+INVOICE_PATH = '/assinaturas/v1/invoices'
 
 
-def fetch_invoice_payments(invoice_code):
-    return pyrequest('GET', f'/invoices/{invoice_code}/payments')
+def fetch_invoice(code):
+    return pyrequest('GET', f'{INVOICE_PATH}/{code}')
 
 
-def payment_details(payment_code):
-    return pyrequest('GET', f'/payments/{payment_code}')
+def fetch_invoice_payments(code):
+    return pyrequest('GET', f'{INVOICE_PATH}/{code}/payments')
 
 
-def retry_invoice_payment(invoice_code):
-    return pyrequest('POST', f'/invoices/{invoice_code}/retry')
+def payment_details(code):
+    return pyrequest('GET', f'/assinaturas/v1/payments/{code}')
 
 
-def generate_bank_slip(invoice_code, json={}):
-    return pyrequest('POST', f'/invoices/{invoice_code}/boletos', json)
+def retry_invoice_payment(code):
+    return pyrequest('POST', f'{INVOICE_PATH}/{code}/retry')
+
+
+def generate_bank_slip(code, json={}):
+    return pyrequest('POST', f'{INVOICE_PATH}/{code}/boletos', json)
